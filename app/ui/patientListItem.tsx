@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function PatientListItem({ email, imageUrl, name, role, lastSeen}: { email: string, imageUrl: string, name: string, role: string, lastSeen: string | null}) {
   return(
     <li key={email} className="flex justify-between gap-x-6 py-5">
