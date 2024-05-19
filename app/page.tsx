@@ -68,6 +68,7 @@ export default function Home() {
       <div className="px-4 py-6 sm:px-6 lg:pl-8 lg:flex-1 xl:pl-6">
         <ul role="list" className="divide-y divide-gray-100">
           {people.map((person) => <PatientListItem
+            key={person.id}
             email={person.email}
             imageUrl={person.imageUrl}
             name={person.name}

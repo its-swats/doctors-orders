@@ -1,5 +1,3 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-
 export default function Navbar({ children }: { children: React.ReactNode }) {
   return (
     <>
