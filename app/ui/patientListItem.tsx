@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
-export default function PatientListItem({ email, imageUrl, name, role, lastSeen}: { email: string, imageUrl: string, name: string, role: string, lastSeen: string | null}) {
+export default function PatientListItem({ email, imageUrl, name }: { email: string, imageUrl: string, name: string }) {
   return(
-    <li key={email} className="flex justify-between gap-x-6 py-5">
+    <li className="flex justify-between gap-x-6 py-5">
       <div className="flex min-w-0 gap-x-4">
         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={imageUrl} alt="" />
         <div className="min-w-0 flex-auto">
@@ -11,7 +11,7 @@ export default function PatientListItem({ email, imageUrl, name, role, lastSeen}
         </div>
       </div>
       <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-        <p className="text-sm leading-6 text-gray-900">{role}</p>
+        <p className="text-sm leading-6 text-gray-900">Patient</p>
       </div>
     </li>
   )

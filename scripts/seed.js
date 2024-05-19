@@ -1,161 +1,193 @@
 const { db } = require('@vercel/postgres');
-const {
-  invoices,
-  customers,
-  revenue,
-  users,
-} = require('../app/lib/placeholder-data.js');
-const bcrypt = require('bcrypt');
 
-async function seedUsers(client) {
+const firstNames = [
+  "Marj",
+  "Beckie",
+  "Lorianna",
+  "Shana",
+  "Lavinia",
+  "Kelcie",
+  "Hally",
+  "Mehetabel",
+  "Anastasia",
+  "Isis",
+  "Marieann",
+  "Gerty",
+  "Winny",
+  "Ninon",
+  "Ailene",
+  "Conny",
+  "Christean",
+  "Cherye",
+  "Benedetta",
+  "Elka",
+  "Jojo",
+  "Margarete",
+  "Tani",
+  "Ranice",
+  "Martelle",
+  "Petrina",
+  "Tandy",
+  "Kordula",
+  "Benita",
+  "Sallyann",
+  "Vallie",
+  "Sharona",
+  "Biddie",
+  "Anni",
+  "Essy",
+  "Daisy",
+  "Meghan",
+  "Kaile",
+  "Crystie",
+  "Genni",
+  "Nikoletta",
+  "Charmaine",
+  "Brianne",
+  "Christian",
+  "Kalina",
+  "Sheri",
+  "Emma",
+  "Luci",
+  "Theresita",
+  "Constance"
+]
+
+const lastNames = [
+  "Goldman",
+  "George",
+  "Stephens",
+  "Ritchie",
+  "Tucker",
+  "Wells",
+  "Stewart",
+  "Erickson",
+  "Craft",
+  "Mills",
+  "Gray",
+  "Christensen",
+  "Flowers",
+  "Stokes",
+  "Mullen",
+  "McDaniel",
+  "Wolf",
+  "Woods",
+  "Deal",
+  "King",
+  "Fletcher",
+  "Lamb",
+  "Simpson",
+  "Whitaker",
+  "Kirby",
+  "Hudson",
+  "Kumar",
+  "Galloway",
+  "Myers",
+  "Benson",
+  "Hall",
+  "Henderson",
+  "Herring",
+  "Cooper",
+  "Greer",
+  "Tilley",
+  "Ellis",
+  "Bernstein",
+  "Siegel",
+  "Parker",
+  "Merrill",
+  "Katz",
+  "Freedman",
+  "Rose",
+  "Zhu",
+  "Cooke",
+  "Boone",
+  "Anderson",
+  "Scott",
+  "Floyd",
+]
+
+const images = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',      
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+]
+
+const createPatientData = (records) => {
+  const data = [];
+  for(let i = 0; i < records; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    data.push({
+      name: `${firstName} ${lastName}`,
+      email: `${firstName}.${lastName}-${i}@example.com`,
+      imageUrl: images[Math.floor(Math.random() * images.length)]
+    });
+  }
+
+  return data;
+};
+
+async function seedPatients(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
+    await client.sql`DROP TABLE IF EXISTS patients`;
     const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE IF NOT EXISTS patients (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        image_url TEXT NOT NULL
       );
     `;
 
-    console.log(`Created "users" table`);
+    console.log(`Created "patients" table`);
 
-    // Insert data into the "users" table
-    const insertedUsers = await Promise.all(
-      users.map(async (user) => {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+    const patients = createPatientData(50)
+    const insertedPatients = await Promise.all(
+      patients.map(async (patient) => {
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO patients (name, email, image_url)
+        VALUES (${patient.name}, ${patient.email}, ${patient.imageUrl})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
     );
 
-    console.log(`Seeded ${insertedUsers.length} users`);
+    console.log(`Seeded ${insertedPatients.length} patients`);
 
     return {
       createTable,
-      users: insertedUsers,
+      patients: insertedPatients,
     };
   } catch (error) {
-    console.error('Error seeding users:', error);
+    console.error('Error seeding patients:', error);
     throw error;
   }
 }
 
-async function seedInvoices(client) {
+async function seedNotes(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-    // Create the "invoices" table if it doesn't exist
+    await client.sql`DROP TABLE IF EXISTS notes`;
     const createTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS invoices (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    customer_id UUID NOT NULL,
-    amount INT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL
-  );
-`;
-
-    console.log(`Created "invoices" table`);
-
-    // Insert data into the "invoices" table
-    const insertedInvoices = await Promise.all(
-      invoices.map(
-        (invoice) => client.sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
+      CREATE TABLE IF NOT EXISTS notes (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      patient_id UUID NOT NULL,
+      content VARCHAR(30) NOT NULL,
+      updated_at DATE NOT NULL,
+      created_at DATE NOT NULL
     );
-
-    console.log(`Seeded ${insertedInvoices.length} invoices`);
-
-    return {
-      createTable,
-      invoices: insertedInvoices,
-    };
-  } catch (error) {
-    console.error('Error seeding invoices:', error);
-    throw error;
-  }
-}
-
-async function seedCustomers(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-    // Create the "customers" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS customers (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        image_url VARCHAR(255) NOT NULL
-      );
     `;
 
-    console.log(`Created "customers" table`);
-
-    // Insert data into the "customers" table
-    const insertedCustomers = await Promise.all(
-      customers.map(
-        (customer) => client.sql`
-        INSERT INTO customers (id, name, email, image_url)
-        VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedCustomers.length} customers`);
-
     return {
       createTable,
-      customers: insertedCustomers,
-    };
+      notes: []
+    }
   } catch (error) {
-    console.error('Error seeding customers:', error);
-    throw error;
-  }
-}
-
-async function seedRevenue(client) {
-  try {
-    // Create the "revenue" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS revenue (
-        month VARCHAR(4) NOT NULL UNIQUE,
-        revenue INT NOT NULL
-      );
-    `;
-
-    console.log(`Created "revenue" table`);
-
-    // Insert data into the "revenue" table
-    const insertedRevenue = await Promise.all(
-      revenue.map(
-        (rev) => client.sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedRevenue.length} revenue`);
-
-    return {
-      createTable,
-      revenue: insertedRevenue,
-    };
-  } catch (error) {
-    console.error('Error seeding revenue:', error);
+    console.error('Error seeding notes:', error);
     throw error;
   }
 }
@@ -163,11 +195,8 @@ async function seedRevenue(client) {
 async function main() {
   const client = await db.connect();
 
-  await seedUsers(client);
-  await seedCustomers(client);
-  await seedInvoices(client);
-  await seedRevenue(client);
-
+  await seedPatients(client);  
+  await seedNotes(client);
   await client.end();
 }
 
