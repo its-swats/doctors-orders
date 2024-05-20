@@ -145,7 +145,7 @@ async function seedPatients(client) {
 
     console.log(`Created "patients" table`);
 
-    const patients = createPatientData(50)
+    const patients = createPatientData(15)
     const insertedPatients = await Promise.all(
       patients.map(async (patient) => {
         return client.sql`
