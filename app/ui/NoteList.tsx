@@ -26,7 +26,7 @@ export default function NoteList({ patient, notes }: { patient: Patient, notes: 
         )}
       </div>
       { notes.length > 0 && (
-        notes.map((note) => <PatientNoteCard key={note.id} patient={patient} note={note} />)
+        notes.map((note) => <PatientNoteCard key={note.id} patient={patient} note={note} showPatient={false} />)
       )}
     </>
   );

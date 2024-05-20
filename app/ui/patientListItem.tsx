@@ -1,9 +1,23 @@
+'use client'
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
 export default function PatientListItem({ id, email, imageUrl, name }: { id: string, email: string, imageUrl: string, name: string }) {
+  const pathname = usePathname();
+  const selected = pathname.indexOf(`/patients/${id}`) != -1;
+  const href = selected ? '/' : `/patients/${id}/notes`
+
   return(
-    <Link href={`/patients/${id}/notes`}>
-      <li className="flex justify-between gap-x-6 py-5">
+    <Link href={href}>
+      <li className={clsx("flex justify-between gap-x-6 py-5",
+        {
+          'bg-slate-300': selected,
+          'px-4': selected,
+          'rounded-md': selected
+        }
+      )}>
         <div className="flex min-w-0 gap-x-4">
           <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={imageUrl} alt="" />
           <div className="min-w-0 flex-auto">
