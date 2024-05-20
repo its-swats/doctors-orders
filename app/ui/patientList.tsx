@@ -1,7 +1,9 @@
 import PatientListItem from './patientListItem';
-import { Patient } from "../lib/types"
+import { fetchFilteredPatients } from '../lib/data/patients';
 
-export default function PatientList({ patients }: { patients: Patient[] }) {
+export default async function PatientList() {
+  const patients = await fetchFilteredPatients('');
+
   return(
     <div className="px-4 py-6 sm:px-6 flex-1 lg:pl-8 xl:pl-6">
       <ul role="list" className="divide-y divide-gray-100">
