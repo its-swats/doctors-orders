@@ -2,15 +2,11 @@ import { sql } from '@vercel/postgres';
 import { Patient } from '../types';
 import { unstable_noStore as noStore } from 'next/cache';
 
-const ITEMS_PER_PAGE = 6;
-
 export async function fetchFilteredPatients(
   query: string,
-  currentPage: number,
 ) {
   noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
+  console.log('where')
   try {
     const patients = await sql<Patient>`
       SELECT
@@ -25,6 +21,6 @@ export async function fetchFilteredPatients(
     return patients.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch patients.');
   }
 }
