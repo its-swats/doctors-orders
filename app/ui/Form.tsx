@@ -11,7 +11,7 @@ import { Note } from '../lib/types';
 interface FormProps {
   patientId: string;
   note: Note | null;
-  action(prevState: State, formData: FormData): State;
+  action(prevState: State, formData: FormData): Promise<State>;
 }
 
 export default function Form({ patientId, note, action }: FormProps) {
