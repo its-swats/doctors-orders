@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Search from "./ui/search";
 import Navbar from "./ui/navbar";
 import PatientList from './ui/patientList';
+import { Suspense } from "react";
 
 import "./globals.css";
 
@@ -22,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <Navbar>
-          <Search />
+          <Suspense>
+            <Search />
+          </Suspense>
         </Navbar>
         <div className="mx-auto w-full max-w-7xl grow lg:flex xl:px-2">
           <PatientList />
