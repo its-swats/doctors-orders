@@ -1,8 +1,7 @@
-'use client'
-
+import { Link } from './catalyst/link';
 import { Patient, Note } from '../lib/types';
 import { Button } from './catalyst/button';
-import { deleteNote } from '../lib/data/actions';
+import DeleteNoteButton from './DeleteNoteButton';
 
 export default function PatientNoteCard({ patient, note }: {patient: Patient, note: Note} ) {
   return(
@@ -11,8 +10,10 @@ export default function PatientNoteCard({ patient, note }: {patient: Patient, no
         { note.content }
       </div>
       <div className="flex flex-row-reverse items-end gap-2 pr-6 mb-6">
-        <Button onClick={() => deleteNote({ id: note.id })} type='button'>Delete</Button>
-        <Button type='button'>Edit</Button>
+        <DeleteNoteButton pid={patient.id} nid={note.id} />
+        <Link href={`/patients/${patient.id}/notes/${note.id}/edit`}>
+          <Button type='button'>Edit</Button>
+        </Link>
       </div>
     </div>
   )

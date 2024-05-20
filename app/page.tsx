@@ -1,17 +1,14 @@
-import PatientList from './ui/patientList';
-import PatientNoteContainer from './ui/patientNoteContainer';
-import { fetchFilteredPatients } from './lib/data/patients';
+import PatientAvatar from "./ui/patientAvatar";
 
 export default async function Home() {
-  const patients = await fetchFilteredPatients('');
-
   return (
-    <div className="mx-auto w-full max-w-7xl grow lg:flex xl:px-2">
-      <PatientList patients={patients} />
-
-      <div className="shrink-0 border-t lg:flex-1 border-gray-200 px-4 py-6 sm:px-6 lg:w-96 lg:border-l lg:border-t-0 lg:pr-8 xl:pr-6">
-        <PatientNoteContainer patient={patients[0]} />
-      </div>
+    <div className="text-center">
+      <PatientAvatar
+        name={null}
+        imageUrl={null}
+      />
+      <h3 className="mt-2 text-sm font-semibold text-gray-900">No Patient Selected</h3>
+      <p className="mt-1 text-sm text-gray-500">Get started by selecting or searching for a Patient.</p>
     </div>
   );
 }

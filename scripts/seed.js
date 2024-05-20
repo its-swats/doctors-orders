@@ -176,7 +176,7 @@ async function seedNotes(client) {
       CREATE TABLE IF NOT EXISTS notes (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       patient_id UUID NOT NULL,
-      content VARCHAR(30) NOT NULL,
+      content VARCHAR(300) NOT NULL,
       updated_at DATE NOT NULL,
       created_at DATE NOT NULL
     );
