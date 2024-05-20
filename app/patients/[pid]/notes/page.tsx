@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 import NoteList from "@/app/ui/NoteList";
 
 
-export default async function Page({ params }: { params: { pid: string }}) {
+export default async function Page({ params, searchParams }: { params: { pid: string }, searchParams?: { query?: string }}) {
+  const query = searchParams?.query || '';
   const { pid } = params;
   const [patient, notes] = await Promise.all([
     fetchPatient(pid),
-    fetchNotesForPatient(pid)
+    fetchNotesForPatient(pid, query)
   ])
   if(!patient) {
     return notFound();

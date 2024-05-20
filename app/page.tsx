@@ -2,8 +2,9 @@ import PatientAvatar from "./ui/patientAvatar";
 import { fetchAllNotes } from "./lib/data/notes";
 import PatientNoteCard from "@/app/ui/patientNoteCard";
 
-export default async function Home() {
-  const data = await fetchAllNotes();
+export default async function Home({ searchParams }: { searchParams?: { query?: string } }) {
+  const query = searchParams?.query || '';
+  const data = await fetchAllNotes(query);
   
   if(data.length > 0) {
     return data.map((record) => 

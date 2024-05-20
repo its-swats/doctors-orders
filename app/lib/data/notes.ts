@@ -4,7 +4,8 @@ import { Patient } from '../types';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchNotesForPatient(
-  patientId: string
+  patientId: string,
+  query: string
 ) {
   noStore();
 
@@ -15,7 +16,7 @@ export async function fetchNotesForPatient(
         notes.content,
         notes.updated_at
       FROM notes
-      WHERE notes.patient_id = ${patientId}
+      WHERE notes.patient_id = ${patientId} AND notes.content ILIKE ${`%${query}%`}
       ORDER BY notes.updated_at DESC
     `;
 
@@ -45,7 +46,7 @@ export async function fetchNote(
   }
 }
 
-export async function fetchAllNotes() {
+export async function fetchAllNotes(query: string) {
   noStore();
   try {
     const notes = await sql<Note & Patient>`
@@ -58,6 +59,7 @@ export async function fetchAllNotes() {
         patients.image_url
       FROM notes
       JOIN patients ON notes.patient_id = patients.id
+      WHERE notes.content ILIKE ${`%${query}%`}
     `;
     return notes.rows;
   } catch (error) {
